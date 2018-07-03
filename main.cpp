@@ -38,37 +38,48 @@ void conv_2d(int kCols, int kRows, double* kernel, int rows, int cols, double* i
 
 int main(int argc, char const *argv[])
 {
-	int N = 5;
+	int rows = 28;
+	int cols = 28;
 
-	double* a = new double[N];
-	double* b = new double[N];
+	int kernel_rows = 3;
+	int kernel_cols = 3;
+
+	double* inImage = new double[rows * cols];
+	double* outImage = new double[rows * cols];
+	double* kernel = new double[kernel_rows * kernel_cols];
 
 	// Initialize arrays
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < rows; ++i)
 	{
-		a[i] = i;
-		b[i] = 2 * i;
+		for (int j = 0; j < cols; ++j)
+		{
+			inImage[i * rows + j] = 1.0;
+			outImage[i * rows + j] = 0.0;
+		}
 	}
 
-	// Initialize output array
-	double* c = new double[N];
-	for (int i = 0; i < N; ++i)
-		c[i] = 0.0;
+	for (int i = 0; i < kernel_rows; ++i)
+	{
+		for (int j = 0; j < kernel_cols; ++j)
+		{
+			kernel[i * kernel_rows + j] = 1.0 / 9.0;
+		}
+	}
 
-	for (int i = 0; i < N; ++i)
-		printf("c[%d] = %4.4f\n", i, c[i]);
+	for (int i = 0; i < rows*cols; ++i)
+		printf("outImage[%d] = %4.4f\n", i, outImage[i]);
 
 	printf("\n\n");
 
-	// add
-	add(a, b, c, N);
+	// conv2d
+	conv_2d(kernel_rows, kernel_cols, kernel, rows, cols, inImage, outImage);
 
-	for (int i = 0; i < N; ++i)
-		printf("c[%d] = %4.4f\n", i, c[i]);
+	for (int i = 0; i < rows*cols; ++i)
+		printf("outImage[%d] = %4.4f\n", i, outImage[i]);
 
-	delete[] a;
-	delete[] b;
-	delete[] c;
+	delete[] inImage;
+	delete[] outImage;
+	delete[] kernel;
 
 	return 0;
 }
